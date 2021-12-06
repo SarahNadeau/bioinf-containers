@@ -1,4 +1,4 @@
-FROM ubuntu:xenial
+FROM ubuntu:xenial as base
 
 ENV PATH="/root/miniconda3/bin:${PATH}"
 ARG PATH="/root/miniconda3/bin:${PATH}"
@@ -23,4 +23,13 @@ RUN conda config --add channels defaults \
 # Install parsnp in conda environment
 RUN conda create -n parsnp python=3.7 parsnp=$PARSNP_VER
 
+FROM base as test
+
+# TODO: implment tests
+RUN conda run -n parsnp parsnp --version
+
+FROM base as app
+
+# Test with: docker build --target test --progress=plain -t parsnp -f Dockerfile_from_conda .
+# Build with: docker build -t parsnp -f Dockerfile_from_conda .
 # Run with: docker run parsnp conda run -n parsnp parsnp --version
