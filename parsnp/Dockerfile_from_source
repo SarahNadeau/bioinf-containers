@@ -1,0 +1,54 @@
+FROM ubuntu:xenial as base
+
+# ARG variables only persist during build time
+ARG PARSNP_VER=1.5.6
+ARG PYTHON_VER="3.6.14"
+
+# Update package index
+RUN apt-get update && apt-get upgrade
+
+# Install ParSNP dependencies and packages need to build from source
+RUN apt-get install -y \
+    automake-1.15 \
+    autoconf \
+    libtool \
+    build-essential \
+    wget
+
+# Install ParSNP
+RUN wget https://github.com/marbl/parsnp/archive/v$PARSNP_VER.tar.gz
+RUN tar xvf v$PARSNP_VER.tar.gz && rm v$PARSNP_VER.tar.gz
+
+WORKDIR "/parsnp-$PARSNP_VER"/muscle
+RUN ./autogen.sh
+RUN ./configure --prefix=`pwd` CXXFLAGS='-fopenmp'
+RUN make install
+
+WORKDIR "/parsnp-$PARSNP_VER"/
+RUN ./autogen.sh && ./configure
+RUN make LDADD=-lMUSCLE-3.7 && make install
+
+# Add ParSNP to PATH
+ENV PATH="/parsnp-$PARSNP_VER:$PATH"
+
+# Install python3, pip3, and numpy
+RUN apt-get install -y \
+    zlib1g-dev \
+    libssl-dev
+
+WORKDIR /
+RUN wget https://www.python.org/ftp/python/$PYTHON_VER/Python-$PYTHON_VER.tgz
+RUN tar xvf Python-$PYTHON_VER.tgz && rm Python-$PYTHON_VER.tgz
+WORKDIR "/Python-$PYTHON_VER"
+RUN ./configure && make && make install
+
+# Create alias for ParSNP to use python3
+RUN ln -s /usr/local/bin/python3 /usr/local/bin/python & \
+    ln -s /usr/local/bin/pip3 /usr/local/bin/pip
+
+RUN pip3 install numpy
+
+WORKDIR /
+
+# Build with: docker build -t parsnp --progress=plain -f Dockerfile_from_source .
+# Run with: docker run parsnp parsnp --version
