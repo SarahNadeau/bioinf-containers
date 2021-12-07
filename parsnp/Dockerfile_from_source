@@ -1,4 +1,4 @@
-FROM ubuntu:xenial as base
+FROM ubuntu:xenial as builder
 
 # ARG variables only persist during build time
 ARG PARSNP_VER="1.5.6"
@@ -25,15 +25,14 @@ RUN tar xvf v$PARSNP_VER.tar.gz && rm v$PARSNP_VER.tar.gz
 
 WORKDIR "/parsnp-$PARSNP_VER"/muscle
 RUN ./autogen.sh
-RUN ./configure --prefix=`pwd` CXXFLAGS='-fopenmp'
-RUN make install
+RUN ./configure --prefix=/usr/local CXXFLAGS='-fopenmp' && make install
 
 WORKDIR "/parsnp-$PARSNP_VER"/
-RUN ./autogen.sh && ./configure
-RUN make LDADD=-lMUSCLE-3.7 && make install
+RUN ./autogen.sh
+RUN ./configure && make LDADD=-lMUSCLE-3.7 && make install
+RUN cp /parsnp-1.5.6/parsnp /usr/local/bin
 
-# Add ParSNP to PATH
-ENV PATH="/parsnp-$PARSNP_VER:$PATH"
+ENV LD_LIBRARY_PATH=/usr/local/lib
 
 # Install python3, pip3, and numpy
 RUN apt-get install -y \
@@ -56,15 +55,14 @@ RUN pip install numpy==$NUMPY_VER
 # Install fasttree: http://www.microbesonline.org/fasttree/#Install
 WORKDIR /
 RUN wget http://www.microbesonline.org/fasttree/FastTree.c
-RUN gcc -O3 -finline-functions -funroll-loops -Wall -o FastTree FastTree.c -lm
-ENV PATH="/:$PATH"
+RUN gcc -O3 -finline-functions -funroll-loops -Wall -o /usr/local/bin/FastTree FastTree.c -lm
 
 # Install RAxML: https://cme.h-its.org/exelixis/resource/download/NewManual.pdf
 RUN wget https://github.com/stamatak/standard-RAxML/archive/refs/tags/v$RAXML_VER.tar.gz
 RUN tar xvf v$RAXML_VER.tar.gz
 WORKDIR standard-RAxML-$RAXML_VER
 RUN make -f Makefile.AVX.PTHREADS.gcc
-ENV PATH="/standard-RAxML-$RAXML_VER:$PATH"
+RUN cp /standard-RAxML-$RAXML_VER/raxmlHPC-PTHREADS-AVX /usr/local/bin
 
 # Install MASH: https://github.com/marbl/Mash/blob/master/INSTALL.txt
 WORKDIR /
@@ -88,12 +86,13 @@ RUN wget https://www.maths.otago.ac.nz/~dbryant/software/PhiPack.tar.gz
 RUN tar xvf PhiPack.tar.gz
 WORKDIR PhiPack/src
 RUN make
-ENV PATH="/PhiPack:$PATH"
+RUN cp /PhiPack/Phi /usr/local/bin
 
-WORKDIR /
+FROM ubuntu:xenial as app
+COPY --from=builder /usr/local/ /usr/local/
+COPY --from=builder /usr/lib/ /usr/lib/
 
-# TODO: put executables in a separate place for the app (using configure --prefix?)
-# TODO: make test and app image layers to leave behind messy install files
+# TODO: make test image layer for testing
 
 # Build with: docker build -t parsnp --progress=plain -f Dockerfile_from_source .
 # Run ParSNP with: docker run --rm parsnp parsnp --version
