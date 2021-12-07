@@ -1,13 +1,17 @@
 FROM ubuntu:xenial as base
 
 # ARG variables only persist during build time
-ARG PARSNP_VER=1.5.6
+ARG PARSNP_VER="1.5.6"
 ARG PYTHON_VER="3.6.14"
+ARG NUMPY_VER="1.19.5"
+ARG RAXML_VER="8.2.12"
+ARG FASTTREE_VER="2.1.11"
+ARG MASH_VER="2.3"
 
 # Update package index
 RUN apt-get update && apt-get upgrade
 
-# Install ParSNP dependencies and packages need to build from source
+# Install ParSNP basic dependencies and packages need to build from source
 RUN apt-get install -y \
     automake-1.15 \
     autoconf \
@@ -46,9 +50,54 @@ RUN ./configure && make && make install
 RUN ln -s /usr/local/bin/python3 /usr/local/bin/python & \
     ln -s /usr/local/bin/pip3 /usr/local/bin/pip
 
-RUN pip3 install numpy
+RUN pip install numpy==$NUMPY_VER
+
+# At this point, parsnp --version runs. Now install more advanced requirements.
+# Install fasttree: http://www.microbesonline.org/fasttree/#Install
+WORKDIR /
+RUN wget http://www.microbesonline.org/fasttree/FastTree.c
+RUN gcc -O3 -finline-functions -funroll-loops -Wall -o FastTree FastTree.c -lm
+ENV PATH="/:$PATH"
+
+# Install RAxML: https://cme.h-its.org/exelixis/resource/download/NewManual.pdf
+RUN wget https://github.com/stamatak/standard-RAxML/archive/refs/tags/v$RAXML_VER.tar.gz
+RUN tar xvf v$RAXML_VER.tar.gz
+WORKDIR standard-RAxML-$RAXML_VER
+RUN make -f Makefile.AVX.PTHREADS.gcc
+ENV PATH="/standard-RAxML-$RAXML_VER:$PATH"
+
+# Install MASH: https://github.com/marbl/Mash/blob/master/INSTALL.txt
+WORKDIR /
+RUN wget https://capnproto.org/capnproto-c++-0.9.1.tar.gz
+RUN tar xvf capnproto-c++-0.9.1.tar.gz
+WORKDIR "capnproto-c++-0.9.1"
+RUN ./configure && make -j6 check && make install
+
+RUN apt-get install -y libgsl0-dev
+
+WORKDIR /
+RUN wget https://github.com/marbl/Mash/archive/refs/tags/v$MASH_VER.tar.gz
+RUN tar xvf v$MASH_VER.tar.gz
+WORKDIR Mash-$MASH_VER
+RUN ./bootstrap.sh
+RUN ./configure && make && make install
+
+# Install PhiPack: https://www.maths.otago.ac.nz/~dbryant/software/phimanual.pdf
+WORKDIR /
+RUN wget https://www.maths.otago.ac.nz/~dbryant/software/PhiPack.tar.gz
+RUN tar xvf PhiPack.tar.gz
+WORKDIR PhiPack/src
+RUN make
+ENV PATH="/PhiPack:$PATH"
 
 WORKDIR /
 
+# TODO: put executables in a separate place for the app (using configure --prefix?)
+# TODO: make test and app image layers to leave behind messy install files
+
 # Build with: docker build -t parsnp --progress=plain -f Dockerfile_from_source .
-# Run with: docker run parsnp parsnp --version
+# Run ParSNP with: docker run --rm parsnp parsnp --version
+# Run FastTree with: docker run --rm parsnp FastTree --version
+# Run RAxML with: docker run --rm parsnp raxmlHPC-PTHREADS-AVX -v
+# Run MASH with: docker run --rm parsnp mash -v
+# Run PhiPack with: docker run --rm parsnp Phi -v
