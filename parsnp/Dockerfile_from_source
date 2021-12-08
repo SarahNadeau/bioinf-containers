@@ -1,12 +1,16 @@
+# Global args persist across stages
+ARG PARSNP_VER="1.5.6"
+
 FROM ubuntu:xenial as builder
+ARG PARSNP_VER
 
 # ARG variables only persist during build time
-ARG PARSNP_VER="1.5.6"
 ARG PYTHON_VER="3.6.14"
 ARG NUMPY_VER="1.19.5"
 ARG RAXML_VER="8.2.12"
 ARG FASTTREE_VER="2.1.11"
 ARG MASH_VER="2.3"
+ARG HARVEST_VER="1.3"
 
 # Update package index
 RUN apt-get update && apt-get upgrade
@@ -18,21 +22,6 @@ RUN apt-get install -y \
     libtool \
     build-essential \
     wget
-
-# Install ParSNP
-RUN wget https://github.com/marbl/parsnp/archive/v$PARSNP_VER.tar.gz
-RUN tar xvf v$PARSNP_VER.tar.gz && rm v$PARSNP_VER.tar.gz
-
-WORKDIR "/parsnp-$PARSNP_VER"/muscle
-RUN ./autogen.sh
-RUN ./configure --prefix=/usr/local CXXFLAGS='-fopenmp' && make install
-
-WORKDIR "/parsnp-$PARSNP_VER"/
-RUN ./autogen.sh
-RUN ./configure && make LDADD=-lMUSCLE-3.7 && make install
-RUN cp /parsnp-1.5.6/parsnp /usr/local/bin
-
-ENV LD_LIBRARY_PATH=/usr/local/lib
 
 # Install python3, pip3, and numpy
 RUN apt-get install -y \
@@ -51,7 +40,6 @@ RUN ln -s /usr/local/bin/python3 /usr/local/bin/python & \
 
 RUN pip install numpy==$NUMPY_VER
 
-# At this point, parsnp --version runs. Now install more advanced requirements.
 # Install fasttree: http://www.microbesonline.org/fasttree/#Install
 WORKDIR /
 RUN wget http://www.microbesonline.org/fasttree/FastTree.c
@@ -62,9 +50,9 @@ RUN wget https://github.com/stamatak/standard-RAxML/archive/refs/tags/v$RAXML_VE
 RUN tar xvf v$RAXML_VER.tar.gz
 WORKDIR standard-RAxML-$RAXML_VER
 RUN make -f Makefile.AVX.PTHREADS.gcc
-RUN cp /standard-RAxML-$RAXML_VER/raxmlHPC-PTHREADS-AVX /usr/local/bin
+RUN cp /standard-RAxML-$RAXML_VER/raxmlHPC-PTHREADS-AVX /usr/local/bin/raxmlHPC-PTHREADS
 
-# Install MASH: https://github.com/marbl/Mash/blob/master/INSTALL.txt
+# Install Mash: https://github.com/marbl/Mash/blob/master/INSTALL.txt
 WORKDIR /
 RUN wget https://capnproto.org/capnproto-c++-0.9.1.tar.gz
 RUN tar xvf capnproto-c++-0.9.1.tar.gz
@@ -86,17 +74,55 @@ RUN wget https://www.maths.otago.ac.nz/~dbryant/software/PhiPack.tar.gz
 RUN tar xvf PhiPack.tar.gz
 WORKDIR PhiPack/src
 RUN make
-RUN cp /PhiPack/Phi /usr/local/bin
+RUN cp /PhiPack/Phi /usr/local/bin && cp /PhiPack/Profile /usr/local/bin
 
-FROM ubuntu:xenial as app
+# Install ParSNP
+WORKDIR /
+RUN wget https://github.com/marbl/parsnp/archive/v$PARSNP_VER.tar.gz
+RUN tar xvf v$PARSNP_VER.tar.gz && rm v$PARSNP_VER.tar.gz
+
+WORKDIR "/parsnp-$PARSNP_VER"/muscle
+RUN ./autogen.sh
+RUN ./configure CXXFLAGS='-fopenmp' && make install
+
+WORKDIR "/parsnp-$PARSNP_VER"/
+RUN ./autogen.sh
+RUN export ORIGIN=\$ORIGIN
+RUN ./configure LDFLAGS='-Wl,-rpath,$$ORIGIN/../muscle/lib' && make LDADD=-lMUSCLE-3.7 && make install
+
+# Install Harvest-tools
+# TODO install from source
+WORKDIR /
+RUN wget https://github.com/marbl/harvest/releases/download/v1.1.2/Harvest-Linux64-v1.1.2.tar.gz
+RUN tar xvf Harvest-Linux64-v1.1.2.tar.gz
+RUN cp Harvest-Linux64-v1.1.2/harvesttools /usr/local/bin
+
+FROM ubuntu:xenial as base
+ARG PARSNP_VER
+
+COPY --from=builder /parsnp-$PARSNP_VER/ /parsnp-$PARSNP_VER/
 COPY --from=builder /usr/local/ /usr/local/
-COPY --from=builder /usr/lib/ /usr/lib/
+COPY --from=builder /usr/ /usr/
 
-# TODO: make test image layer for testing
+RUN mkdir data/
+WORKDIR data
 
-# Build with: docker build -t parsnp --progress=plain -f Dockerfile_from_source .
-# Run ParSNP with: docker run --rm parsnp parsnp --version
+FROM base as test
+ARG PARSNP_VER
+
+ENV PATH="/parsnp-${PARSNP_VER}:${PATH}"
+
+FROM base as app
+ARG PARSNP_VER
+
+ENV PATH="/parsnp-${PARSNP_VER}:${PATH}"
+ENV LD_LIBRARY_PATH="/usr/local/lib"
+
+# Build with: docker build -t parsnp-1.5.6-from-source --progress=plain -f Dockerfile_from_source .
+# Run ParSNP with: docker run --rm -e CPUS=3 parsnp parsnp --version
 # Run FastTree with: docker run --rm parsnp FastTree --version
 # Run RAxML with: docker run --rm parsnp raxmlHPC-PTHREADS-AVX -v
 # Run MASH with: docker run --rm parsnp mash -v
 # Run PhiPack with: docker run --rm parsnp Phi -v
+
+# Example run: cd ~/Downloads; docker run --rm -e CPUS=3 -v $PWD:/data -u $(id -u):$(id -g) parsnp-1.5.6-from-source parsnp -r ./strep31/NC_011900.fna -d ./strep31
