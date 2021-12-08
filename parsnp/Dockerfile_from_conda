@@ -30,6 +30,11 @@ RUN conda run -n parsnp parsnp --version
 
 FROM base as app
 
-# Test with: docker build --target test --progress=plain -t parsnp -f Dockerfile_from_conda .
-# Build with: docker build -t parsnp -f Dockerfile_from_conda .
+RUN mkdir data
+WORKDIR data/
+
+# Test with: docker build --target test --progress=plain -t parsnp-conda-test -f Dockerfile_from_conda .
+# Build with: docker build -t parsnp-conda -f Dockerfile_from_conda .
 # Run with: docker run parsnp conda run -n parsnp parsnp --version
+
+# Example run: cd ~/Downloads; docker run --rm -v $PWD:/data parsnp-conda conda run -n parsnp parsnp -r ./strep31/NC_011900.fna -d ./strep31
