@@ -46,7 +46,7 @@ cd ../
 ```
 Run the container to generate a core genome alignment, call SNPs, and build a phylogeny. Output files are written to `output_dir`.
 ```
-docker run --rm -v $PWD:/data -u $(id -u):$(id -g) parsnp-1.5.6 parsnp \
+docker run --rm -v $PWD:/data -u $(id -u):$(id -g) snads/parsnp-1.5.6:latest parsnp \
 -d input_dir \
 -o outdir_parsnp \
 --use-fasttree \
