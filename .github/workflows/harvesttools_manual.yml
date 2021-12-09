@@ -33,7 +33,7 @@ jobs:
       uses: docker/build-push-action@v2
       with:
         context: ./harvesttools
-        file: Dockerfile_from_source
+        file: ./harvesttools/Dockerfile-from-source
         push: true
         tags: ${{ secrets.DOCKER_HUB_USERNAME }}/harvesttools:latest
 
