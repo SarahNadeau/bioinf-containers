@@ -35,6 +35,7 @@ jobs:
         context: ./harvesttools
         file: ./harvesttools/Dockerfile-from-source
         push: true
+        target: app
         tags: ${{ secrets.DOCKER_HUB_USERNAME }}/harvesttools:latest
 
     - name: Image digest
