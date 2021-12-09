@@ -31,5 +31,18 @@ WORKDIR harvest-tools-$HARVEST_VER
 RUN ./bootstrap.sh
 RUN ./configure --with-protobuf=/usr --with-capnp=/usr --prefix=/usr/local && make && make install
 
+FROM builder as test
+
+RUN apt-get install -y python3
+
+COPY tests/ .
+RUN python3 -m unittest
+
+FROM builder as app
+
+RUN mkdir /data
+WORKDIR /data
+
+# Test with: docker build --target=test --progress=plain -t harvest-tools-test  -f Dockerfile-from-source .
 # Build with: docker build -t harvest-tools -f Dockerfile-from-source .
 # Run with: docker run --rm harvest-tools harvesttools --version
