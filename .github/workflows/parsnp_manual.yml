@@ -1,6 +1,6 @@
 # This is a basic workflow to built-to-test and then build-and-push that is manually triggered
 
-name: ParSNP Manual workflow
+name: Build, test & push ParSNP 1.5.6 image
 
 # Run workflow when manually triggered using the UI.
 on: workflow_dispatch
