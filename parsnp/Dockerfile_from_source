@@ -107,6 +107,9 @@ RUN ./autogen.sh
 RUN export ORIGIN=\$ORIGIN
 RUN ./configure LDFLAGS='-Wl,-rpath,$$ORIGIN/../muscle/lib' && make LDADD=-lMUSCLE-3.7 && make install
 
+# ParSNP expects the FastTree executable to be called 'fasttree'
+RUN ln -sf /usr/local/bin/FastTree /usr/local/bin/fasttree
+
 FROM ubuntu:xenial as base
 ARG PARSNP_VER
 ARG HARVEST_VER
@@ -137,7 +140,7 @@ WORKDIR data
 # Build with: docker build -t parsnp-$PARSNP_VER --progress=plain -f Dockerfile_from_source .
 # Run ParSNP with: docker run --rm parsnp-$PARSNP_VER parsnp --version
 # Run FastTree with: docker run --rm parsnp-$PARSNP_VER FastTree --version
-# Run RAxML with: docker run --rm parsnp-$PARSNP_VER raxmlHPC-PTHREADS-AVX -v
+# Run RAxML with: docker run --rm parsnp-$PARSNP_VER raxmlHPC-PTHREADS -v
 # Run MASH with: docker run --rm parsnp-$PARSNP_VER mash -v
 # Run PhiPack with: docker run --rm parsnp-$PARSNP_VER Phi -v
 # Run HarvestTools with: docker run --rm parsnp-$PARSNP_VER harvesttools --version
