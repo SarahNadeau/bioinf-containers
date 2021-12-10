@@ -1,0 +1,23 @@
+# This caller workflow tests, builds, and pushes the image to Docker Hub.
+
+name: Test, build and push
+
+on: workflow_dispatch
+
+jobs:
+
+  test:
+    uses: SarahNadeau/bioinf-containers/.github/workflows/test.yml@master
+    with:
+      path_to_context: "./harvesttools"
+      dockerfile_name: "Dockerfile_from_source"
+
+  build-and-push:
+    needs: test  # this jobs needs to run serially, after testing succeeded
+    uses: SarahNadeau/bioinf-containers/.github/workflows/build.yml@master
+    with:
+      path_to_context: "./harvesttools"
+      dockerfile_name: "Dockerfile_from_source"
+    secrets:
+      docker_hub_username: ${{ secrets.DOCKER_HUB_USERNAME }}
+      docker_hub_access_token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
