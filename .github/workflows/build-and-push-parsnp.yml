@@ -11,13 +11,15 @@ jobs:
     with:
       path_to_context: "./parsnp"
       dockerfile_name: "Dockerfile_from_source"
+      cache: "parsnp"
 
   build-and-push:
-    needs: test  # this jobs needs to run serially, after testing succeeded
+    needs: test  # this jobs needs to run serially, after testing succeeds
     uses: SarahNadeau/bioinf-containers/.github/workflows/build.yml@master
     with:
       path_to_context: "./parsnp"
       dockerfile_name: "Dockerfile_from_source"
+      cache: "parsnp"
     secrets:
       docker_hub_username: ${{ secrets.DOCKER_HUB_USERNAME }}
       docker_hub_access_token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}

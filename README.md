@@ -26,6 +26,6 @@ I use GitHub Actions to sit between the GitHub code base and the released produc
 The actions workflow automatically builds the test stage of a container at some specified frequency, up to every new commit and pull request. 
 Only if the test build succeeds, the production container is built and automatically pushed to Dockerhub.
 
-See, for example, [this GitHub workflow specification](https://github.com/SarahNadeau/docker-playground/blob/master/.github/workflows/test-python-docker-image.yml).
+See, for example, this GitHub [workflow specification](https://github.com/SarahNadeau/docker-playground/blob/master/.github/workflows/test-python-docker-image.yml). Or, [this one](https://github.com/SarahNadeau/docker-playground/blob/master/.github/workflows/build_and_push.yml), which shows how to exploit common workflows that can be re-used across containers.
 
-The GitHub Actions workflow ensures that only containers that pass the baked-in tests are released.
+These workflows ensure that only containers passing the baked-in tests are released.
