@@ -15,6 +15,9 @@ on:
       cache:
         required: true
         type: string
+      container_name:
+        required: true
+        type: string
     secrets:
       docker_hub_username:
         required: true
@@ -57,7 +60,7 @@ jobs:
           push: true
           cache-from: type=local,src=/tmp/.buildx-cache-${{ inputs.cache }}
           cache-to: type=local,mode=max,dest=/tmp/.buildx-cache-${{ inputs.cache }}-new # mode=max means export layers from all stage to cache
-          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/python-testing-example:latest
+          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/${{ inputs.container_name }}:latest
 
       - name: Move cache # apparently prevents the cache from growing in size forever
         run: |
