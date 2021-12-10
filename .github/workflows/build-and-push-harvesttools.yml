@@ -10,7 +10,8 @@ jobs:
     uses: SarahNadeau/bioinf-containers/.github/workflows/test.yml@master
     with:
       path_to_context: "./harvesttools"
-      dockerfile_name: "Dockerfile_from_source"
+      dockerfile_name: "Dockerfile-from-source"
+      cache: "harvesttools"
 
   build-and-push:
     needs: test  # this jobs needs to run serially, after testing succeeded
@@ -18,6 +19,7 @@ jobs:
     with:
       path_to_context: "./harvesttools"
       dockerfile_name: "Dockerfile_from_source"
+      cache: "harvesttools"
     secrets:
       docker_hub_username: ${{ secrets.DOCKER_HUB_USERNAME }}
       docker_hub_access_token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
