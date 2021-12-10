@@ -1,6 +1,6 @@
 # This caller workflow tests, builds, and pushes the image to Docker Hub.
 
-name: Test, build and push
+name: Build & push HarvestTools image
 
 on: workflow_dispatch
 
