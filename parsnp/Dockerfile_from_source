@@ -132,18 +132,16 @@ WORKDIR data
 
 FROM app as test
 
-COPY tests/ .
-RUN python3 -m unittest
+# Need wget for tests
+RUN apt-get update && apt-get install -y \
+    wget
+
+# Run the tests on app output
+RUN mkdir /tests/
+COPY tests/ /tests/
+RUN python3 -m unittest discover -s /tests
 
 # PARSNP_VER=1.5.6
 # Test with: docker build --target=test -t parsnp-$PARSNP_VER --progress=plain -f Dockerfile_from_source .
 # Build with: docker build --target=app -t parsnp-$PARSNP_VER --progress=plain -f Dockerfile_from_source .
 # Run ParSNP with: docker run --rm parsnp-$PARSNP_VER parsnp --version
-# Run FastTree with: docker run --rm parsnp-$PARSNP_VER FastTree --version
-# Run RAxML with: docker run --rm parsnp-$PARSNP_VER raxmlHPC-PTHREADS -v
-# Run MASH with: docker run --rm parsnp-$PARSNP_VER mash -v
-# Run PhiPack with: docker run --rm parsnp-$PARSNP_VER Phi -v
-# Run HarvestTools with: docker run --rm parsnp-$PARSNP_VER harvesttools --version
-
-# Example data from: https://harvest.readthedocs.io/en/latest/_downloads/ee50eb7e56f23851057b8851cd7b069b/mers_examples.tar.gz
-# Example run: CURRENT_DIR=`pwd`; cd ~/Downloads; docker run --rm -v $PWD:/data -u $(id -u):$(id -g) parsnp-1.5.6 parsnp -r ./strep31/NC_011900.fna -d ./strep31; cd $CURRENT_DIR
