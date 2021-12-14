@@ -23,13 +23,13 @@ mv $OUTGROUP_STRAIN.fna ../reference/${OUTGROUP_STRAIN}_OUTGROUP.fna
 cd ../
 
 # Run using RAxML
-RAXML_OUTDIR=outdir_parsnp_raxml
-parsnp \
--d input_dir \
--o $RAXML_OUTDIR \
--v \
--c \
--r reference/${OUTGROUP_STRAIN}_OUTGROUP.fna
+#RAXML_OUTDIR=outdir_parsnp_raxml
+#parsnp \
+#-d input_dir \
+#-o $RAXML_OUTDIR \
+#-v \
+#-c \
+#-r reference/${OUTGROUP_STRAIN}_OUTGROUP.fna
 
 # Run using FastTree
 FASTTREE_OUTDIR=outdir_parsnp_fasttree
@@ -41,20 +41,15 @@ parsnp \
 -c \
 -r reference/${OUTGROUP_STRAIN}_OUTGROUP.fna
 
-# Echo files for debugging GH actions checksum mismatch
+# Generate SNP alignment files (for debugging)
 harvesttools -i $FASTTREE_OUTDIR/parsnp.ggr -S $FASTTREE_OUTDIR/snp_alignment.txt
-harvesttools -i $RAXML_OUTDIR/parsnp.ggr -S $RAXML_OUTDIR/snp_alignment.txt
-cat $FASTTREE_OUTDIR/snp_alignment.txt
-cat $RAXML_OUTDIR/snp_alignment.txt
-
-cat $FASTTREE_OUTDIR/parsnp.tree
-cat $RAXML_OUTDIR/parsnp.tree
+#harvesttools -i $RAXML_OUTDIR/parsnp.ggr -S $RAXML_OUTDIR/snp_alignment.txt
 
 # Output alignment file hashes for testing
 sha256sum $FASTTREE_OUTDIR/parsnp.xmfa > $FASTTREE_OUTDIR/parsnp.xmfa.checksum
-sha256sum $RAXML_OUTDIR/parsnp.xmfa > $RAXML_OUTDIR/parsnp.xmfa.checksum
+#sha256sum $RAXML_OUTDIR/parsnp.xmfa > $RAXML_OUTDIR/parsnp.xmfa.checksum
 
 # Output treefile hashes for testing
 sha256sum $FASTTREE_OUTDIR/parsnp.tree > $FASTTREE_OUTDIR/parsnp.tree.checksum
-sha256sum $RAXML_OUTDIR/parsnp.tree > $RAXML_OUTDIR/parsnp.tree.checksum
+#sha256sum $RAXML_OUTDIR/parsnp.tree > $RAXML_OUTDIR/parsnp.tree.checksum
 

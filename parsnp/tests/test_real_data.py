@@ -8,6 +8,12 @@ class TestOutput(unittest.TestCase):
         bash_cmd = "bash /tests/scripts/run_real_data.sh"
         subprocess.run(bash_cmd, shell=True, stdout=PIPE)
 
+        # Print files for debugging GH actions checksum mismatch
+        with open("/data/outdir_parsnp_fasttree/snp_alignment.txt", 'r') as f:
+            print(f.read())
+        with open("/data/outdir_parsnp_fasttree/parsnp.tree", 'r') as f:
+            print(f.read())
+
     def test_alignments_equal(self):
         with open("/data/outdir_parsnp_fasttree/parsnp.xmfa.checksum", 'r') as f:
             fasttree_aln_test_hash = f.readlines()[0].split(" ")[0]
