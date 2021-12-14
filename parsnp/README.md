@@ -25,7 +25,7 @@ cd bioinf-containers/parsnp
 # Run tests
 docker build --target=test -t parsnp-1.5.6-test -f Dockerfile_from_source .
 # Build production image
-docker build -t parsnp-1.5.6 -f Dockerfile_from_source .
+docker build --target=app -t parsnp-1.5.6 -f Dockerfile_from_source .
 ```
 
 Run a container based on the image. `--rm` deletes the container after `parsnp --version` is run.

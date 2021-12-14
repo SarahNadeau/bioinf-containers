@@ -15,8 +15,8 @@ I call these stages "test" and "app". They can be built off of a base image (e.g
 See, for example, [this Dockerfile](https://github.com/SarahNadeau/docker-playground/blob/master/test_python_example/Dockerfile).
 
 ```
-# Test with: docker build --target test <container>
-# Build with: docker build --target app <container>
+# Test with: docker build --target=test -t <image name> <context directory>
+# Build with: docker build --target=app -t <image name> <context directory>
 ```
 
 The multistage Dockerfile means files for testing don't clutter up the production container.
