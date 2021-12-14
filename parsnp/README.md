@@ -20,7 +20,8 @@ docker pull snads/parsnp-1.5.6:latest
 ```
 OR, clone this repository and build the image yourself.
 ```
-cd parsnp
+git clone git@github.com:SarahNadeau/bioinf-containers.git
+cd bioinf-containers/parsnp
 # Run tests
 docker build --target=test -t parsnp-1.5.6-test -f Dockerfile_from_source .
 # Build production image
