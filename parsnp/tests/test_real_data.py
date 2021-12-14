@@ -8,12 +8,15 @@ class TestOutput(unittest.TestCase):
         bash_cmd = "bash /tests/scripts/run_real_data.sh"
         subprocess.run(bash_cmd, shell=True, stdout=PIPE)
 
-    def test_alignment(self):
-        aln_ref_hash = "dad980b7c9a043b335817dbbf4805967a04142b5878bc834faf0ae91fdf6e635"
+    def test_alignments_equal(self):
         with open("/data/outdir_parsnp_fasttree/parsnp.xmfa.checksum", 'r') as f:
             fasttree_aln_test_hash = f.readlines()[0].split(" ")[0]
-        self.assertEqual(fasttree_aln_test_hash, aln_ref_hash)
+        with open("/data/outdir_parsnp_raxml/parsnp.xmfa.checksum", 'r') as f:
+            raxml_aln_test_hash = f.readlines()[0].split(" ")[0]
+        self.assertEqual(fasttree_aln_test_hash, raxml_aln_test_hash)
 
+    def test_alignments_vs_ref(self):
+        aln_ref_hash = "dad980b7c9a043b335817dbbf4805967a04142b5878bc834faf0ae91fdf6e635"
         with open("/data/outdir_parsnp_raxml/parsnp.xmfa.checksum", 'r') as f:
             raxml_aln_test_hash = f.readlines()[0].split(" ")[0]
         self.assertEqual(raxml_aln_test_hash, aln_ref_hash)
