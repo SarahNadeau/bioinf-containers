@@ -3,9 +3,9 @@
 # Note: "The single-threaded version of FastTree is deterministic and rerunning the same version of FastTree on the same alignment on the same computer with the same settings should give identical results" (from: http://www.microbesonline.org/fasttree/).
 # Note: "...there is a degree of randomness to Parsnps results" (from: https://github.com/marbl/parsnp/issues/6) but there's no option to set a seed and I don't know where this randomness is introduced. See if the test ever fails?
 
-mkdir -p input_dir
-mkdir -p reference
-cd input_dir
+mkdir -p pos_control/input_dir
+mkdir -p pos_control/reference
+cd pos_control/input_dir
 wget \
     https://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/000/703/365/GCA_000703365.1_Ec2011C-3609/GCA_000703365.1_Ec2011C-3609_genomic.fna.gz \
     https://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/016/766/575/GCA_016766575.1_PDT000040717.5/GCA_016766575.1_PDT000040717.5_genomic.fna.gz \

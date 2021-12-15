@@ -2,9 +2,9 @@
 # This script pulls real data and runs parsnp on it.
 # It should exclude one Salmonella enterica genome for being too unrelated to the Escherichia coli reference genome.
 
-mkdir -p input_dir
-mkdir -p reference
-cd input_dir
+mkdir -p neg_control/input_dir
+mkdir -p neg_control/reference
+cd neg_control/input_dir
 wget \
     https://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/000/703/365/GCA_000703365.1_Ec2011C-3609/GCA_000703365.1_Ec2011C-3609_genomic.fna.gz \
     https://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/016/766/575/GCA_016766575.1_PDT000040717.5/GCA_016766575.1_PDT000040717.5_genomic.fna.gz \
