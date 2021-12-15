@@ -3,7 +3,7 @@ import subprocess
 from subprocess import PIPE
 import os
 
-class TestOutput(unittest.TestCase):
+class TestPositiveControl(unittest.TestCase):
     is_github = os.environ.get('IS_GITHUB') == 'T'
     if not is_github:
         print("Skipping tests using a reference checksum. To run, specify --build-arg IS_GITHUB='T' for the build.")
@@ -11,21 +11,21 @@ class TestOutput(unittest.TestCase):
     # Run this once to have the outputs for all tests
     @classmethod
     def setUpClass(cls):
-        bash_cmd = "bash /tests/scripts/run_real_data.sh"
+        bash_cmd = "bash /tests/scripts/run_positive_control.sh"
         subprocess.run(bash_cmd, shell=True, stdout=PIPE)
 
-        # Print files for debugging GH actions checksum mismatch
-        print("FastTree results for debugging:")
-        with open("/data/outdir_parsnp_fasttree/snp_alignment.txt", 'r') as f:
-            print(f.read())
-        with open("/data/outdir_parsnp_fasttree/parsnp.tree", 'r') as f:
-            print(f.read())
-        print("RAxML results for debugging (tree only):")
-        with open("/data/outdir_parsnp_raxml/parsnp.tree", 'r') as f:
-            print(f.read())
-        print("Aligner log for debugging:")
-        with open("/data/outdir_parsnp_raxml/parsnpAligner.log", 'r') as f:
-            print(f.read())
+        # # Print files for debugging GH actions checksum mismatch
+        # print("FastTree results for debugging:")
+        # with open("/data/outdir_parsnp_fasttree/snp_alignment.txt", 'r') as f:
+        #     print(f.read())
+        # with open("/data/outdir_parsnp_fasttree/parsnp.tree", 'r') as f:
+        #     print(f.read())
+        # print("RAxML results for debugging (tree only):")
+        # with open("/data/outdir_parsnp_raxml/parsnp.tree", 'r') as f:
+        #     print(f.read())
+        # print("Aligner log for debugging:")
+        # with open("/data/outdir_parsnp_raxml/parsnpAligner.log", 'r') as f:
+        #     print(f.read())
 
     def test_alignments_equal(self):
         with open("/data/outdir_parsnp_fasttree/parsnp.xmfa.checksum", 'r') as f:
@@ -73,6 +73,19 @@ class TestOutput(unittest.TestCase):
         with open("/data/outdir_parsnp_raxml/parsnp.tree.checksum", 'r') as f:
             raxml_tree_test_hash = f.readlines()[0].split(" ")[0]
         self.assertEqual(raxml_tree_test_hash, raxml_tree_ref_hash)
+
+
+class TestNegativeControl(unittest.TestCase):
+    # Run this once to have the outputs for all tests
+    @classmethod
+    def setUpClass(cls):
+        bash_cmd = "bash /tests/scripts/run_negative_control.sh"
+        subprocess.run(bash_cmd, shell=True, stdout=PIPE)
+
+    def test_filter(self):
+        with open("/data/outdir_parsnp_filter/parsnp.tree", 'r') as f:
+            filter_tree = f.read()
+        self.assertEqual('GCA_000748565.2_ASM74856v2_genomic.fna' in filter_tree, False)
 
 
 if __name__ == '__main__':
