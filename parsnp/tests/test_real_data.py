@@ -21,7 +21,7 @@ class TestOutput(unittest.TestCase):
         with open("/data/outdir_parsnp_fasttree/parsnp.tree", 'r') as f:
             print(f.read())
         print("RAxML results for debugging (tree only):")
-        with open("/data/outdir_raxml_fasttree/parsnp.tree", 'r') as f:
+        with open("/data/outdir_parsnp_raxml/parsnp.tree", 'r') as f:
             print(f.read())
 
     def test_alignments_equal(self):
