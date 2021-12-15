@@ -23,6 +23,9 @@ class TestOutput(unittest.TestCase):
         print("RAxML results for debugging (tree only):")
         with open("/data/outdir_parsnp_raxml/parsnp.tree", 'r') as f:
             print(f.read())
+        print("Aligner log for debugging:")
+        with open("/data/outdir_parsnp_raxml/parsnpAligner.log", 'r') as f:
+            print(f.read())
 
     def test_alignments_equal(self):
         with open("/data/outdir_parsnp_fasttree/parsnp.xmfa.checksum", 'r') as f:
