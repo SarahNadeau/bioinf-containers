@@ -3,7 +3,6 @@
 # Note: "The single-threaded version of FastTree is deterministic and rerunning the same version of FastTree on the same alignment on the same computer with the same settings should give identical results" (from: http://www.microbesonline.org/fasttree/).
 # Note: "...there is a degree of randomness to Parsnps results" (from: https://github.com/marbl/parsnp/issues/6) but there's no option to set a seed and I don't know where this randomness is introduced. See if the test ever fails?
 
-#OUTGROUP_STRAIN="GCA_000703365.1_Ec2011C-3609_genomic"
 mkdir -p input_dir
 mkdir -p reference
 cd input_dir
