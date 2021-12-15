@@ -132,6 +132,7 @@ RUN mkdir data/
 WORKDIR data
 
 FROM app as test
+ARG IS_GITHUB
 
 # Need wget for pulling test data
 RUN apt-get update && apt-get install -y \
@@ -148,6 +149,5 @@ RUN python3 -m unittest discover -v -s ../tests
 
 # PARSNP_VER=1.5.6
 # Test locally with: docker build --target=test -t parsnp-$PARSNP_VER --progress=plain -f Dockerfile_from_source .
-# Test in github action with: docker build --target=test --build-arg IS_GITHUB='True' -t parsnp-$PARSNP_VER --progress=plain -f Dockerfile_from_source .
 # Build with: docker build --target=app -t parsnp-$PARSNP_VER --progress=plain -f Dockerfile_from_source .
 # Run ParSNP with: docker run --rm parsnp-$PARSNP_VER parsnp --version

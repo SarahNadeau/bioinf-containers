@@ -6,7 +6,7 @@ import os
 class TestOutput(unittest.TestCase):
     is_github = os.environ.get('IS_GITHUB') == 'T'
     if not is_github:
-        print("Skipping tests using a reference checksum. To run, specify --build-arg IS_GITHUB='True' for the build.")
+        print("Skipping tests using a reference checksum. To run, specify --build-arg IS_GITHUB='T' for the build.")
 
     # Run this once to have the outputs for all tests
     @classmethod
@@ -46,7 +46,7 @@ class TestOutput(unittest.TestCase):
         print("Robinson-Foulds distance between FastTree tree and RAxML tree is: " + rf_dist)
         self.assertLessEqual(float(rf_dist), 0.5)
 
-    # Run these tests only if part of GitHub actions workflow because builds on different machines give different alignment & treefile results
+    # Run only if in GitHub actions workflow because builds on different machines yield different alignments, treefiles
     @unittest.skipIf(not is_github, "Skipping because checksums are only valid for image built by GitHub actions workflow.")
     def test_alignments_vs_ref_checksum(self):
         aln_ref_hash = "dad980b7c9a043b335817dbbf4805967a04142b5878bc834faf0ae91fdf6e635"

@@ -45,7 +45,7 @@ jobs:
           target: test
           push: false
           build-args: |
-            IS_GITHUB='True'
+            IS_GITHUB='T'
           cache-from: type=local,src=/tmp/.buildx-cache-${{ inputs.cache }}
           cache-to: type=local,mode=max,dest=/tmp/.buildx-cache-${{ inputs.cache }}-new
 
