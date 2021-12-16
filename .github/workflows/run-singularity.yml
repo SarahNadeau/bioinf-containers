@@ -10,7 +10,7 @@ on:
         type: string
       command:
         required: false
-        default: "echo \"The workdir in the container is: $PWD\""
+        default: "pwd"
         type: string
 
 jobs:
