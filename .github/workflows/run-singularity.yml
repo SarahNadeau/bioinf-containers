@@ -10,7 +10,7 @@ on:
         type: string
       command:
         required: false
-        default: "pwd"
+        default: pwd
         type: string
 
 jobs:
