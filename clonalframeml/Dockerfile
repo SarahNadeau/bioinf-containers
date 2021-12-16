@@ -1,11 +1,9 @@
 ARG CLONALFRAMEML_VER="1.12"
 
-FROM ubuntu:latest as builder
+FROM ubuntu:xenial as builder
 ARG CLONALFRAMEML_VER
-ARG R_VER_PREFIX=4
 # Prefix is for link to R source files
-
-# ARG variables only persist during build time
+ARG R_VER_PREFIX=4
 ARG R_VER=4.0.5
 
 LABEL base.image="ubuntu:xenial"
