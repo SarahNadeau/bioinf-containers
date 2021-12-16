@@ -38,7 +38,7 @@ RUN wget https://cran.rstudio.com/src/base/R-$R_VER_PREFIX/R-$R_VER.tar.gz
 RUN tar -xzvf R-$R_VER.tar.gz
 WORKDIR R-$R_VER
 RUN ./configure \
-    --prefix=/opt/R/$R_VERSION \
+    --prefix=/opt/R/$R_VER \
     --enable-memory-profiling \
     --enable-R-shlib \
     --with-blas \
