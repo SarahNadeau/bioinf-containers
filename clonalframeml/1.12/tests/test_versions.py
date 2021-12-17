@@ -5,7 +5,7 @@ import re
 
 class TestVersions(unittest.TestCase):
 
-    def test_harvesttools_version(self):
+    def test_clonalframeml_version(self):
         bash_cmd = "ClonalFrameML -version"
         result = subprocess.run(bash_cmd, shell=True, stdout=PIPE)
         self.assertEqual(result.stdout, b"ClonalFrameML v1.12\n")
