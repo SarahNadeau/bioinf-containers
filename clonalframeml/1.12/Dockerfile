@@ -24,9 +24,7 @@ RUN wget https://github.com/xavierdidelot/ClonalFrameML/archive/refs/tags/v$CLON
 RUN tar xvf v$CLONALFRAMEML_VER.tar.gz && rm v$CLONALFRAMEML_VER.tar.gz
 WORKDIR /ClonalFrameML-$CLONALFRAMEML_VER/src
 RUN make
-
-# Add to path
-ENV PATH=/ClonalFrameML-$CLONALFRAMEML_VER/src:$PATH
+RUN cp /ClonalFrameML-$CLONALFRAMEML_VER/src/ClonalFrameML /usr/local/bin/ClonalFrameML
 
 # Install R from CRAN (thanks: https://linuxize.com/post/how-to-install-r-on-ubuntu-20-04/)
 # Add GPG key to trust the repository
@@ -43,18 +41,21 @@ RUN apt install -y \
     r-cran-ape \
     r-cran-phangorn
 
-FROM builder as app
+FROM ubuntu:xenial as app
 ARG CLONALFRAMEML_VER
 
-COPY --from=builder /ClonalFrameML-$CLONALFRAMEML_VER/ /ClonalFrameML-$CLONALFRAMEML_VER/
-COPY --from=builder /usr/bin/ /usr/bin/
+COPY --from=builder /usr/ /usr/
+# Fix symlink problem after COPY
+RUN mv /usr/lib/libblas/* /usr/lib/ && mv /usr/lib/lapack/* /usr/lib/
 
 RUN mkdir -p /data
 WORKDIR /data
 
 FROM app as test
 
-RUN apt-get install -y python3
+RUN apt-get update && apt-get install -y python3
+
+ENV PATH=/usr/:$PATH
 
 RUN mkdir ../tests/
 COPY tests/ ../tests/

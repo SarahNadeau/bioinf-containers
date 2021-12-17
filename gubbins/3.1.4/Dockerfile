@@ -27,6 +27,7 @@ RUN apt-get update && apt-get install -y \
     cmake \
     gcc \
     libblas-dev \
+    libeigen3-dev \
     libffi-dev \
     liblapack-dev \
     libsqlite3-dev \
@@ -63,15 +64,13 @@ RUN cp /standard-RAxML-$RAXML_VER/raxmlHPC-PTHREADS-AVX /usr/local/bin/raxmlHPC-
 
 # Install IQ-TREE
 WORKDIR /
-# TODO: fold in above
-RUN apt-get install -y libeigen3-dev
-
 RUN wget https://github.com/Cibiv/IQ-TREE/archive/refs/tags/v$IQTREE_VER.tar.gz
 RUN tar xvf v$IQTREE_VER.tar.gz && rm v$IQTREE_VER.tar.gz
 WORKDIR IQ-TREE-$IQTREE_VER
 RUN mkdir build
 WORKDIR build
 RUN  cmake .. && make
+RUN cp /IQ-TREE-1.6.6/build/iqtree /usr/local/bin/iqtree
 
 # Install FastTree: http://www.microbesonline.org/fasttree/#Install
 WORKDIR /
@@ -89,10 +88,24 @@ RUN autoreconf -i && \
     make install
 RUN cd python && python3 setup.py install
 
-# TODO: add tests, clean up the Dockerfile
-#FROM builder as app
 
-#FROM app as test
+FROM ubuntu:xenial as app
+ARG GUBBINS_VER
 
-# Build with: docker build -t gubbins --progress=plain .
-# Run Gubbins with: docker run --rm -it gubbins gubbins -h
+COPY --from=builder /usr/local/ /usr/local/
+
+ENV LD_LIBRARY_PATH="/usr/lib:/usr/local/lib"
+
+RUN mkdir -p /data
+WORKDIR /data
+
+FROM app as test
+
+RUN mkdir ../tests/
+COPY tests/ ../tests/
+RUN python3 -m unittest discover -v -s ../tests
+
+# Test with: docker build --target=test -t gubbins --progress=plain .
+# Build with: docker build --target=app -t gubbins --progress=plain .
+# Run Gubbins with: docker run --rm gubbins gubbins --version
+# OR: docker run --rm gubbins run_gubbins.py TODO: try this
