@@ -1,4 +1,4 @@
-# This called workflow run a Singularity container based on a Docker image pulled from Dockerhub
+# This called workflow runs a Singularity container based on a Docker image pulled from Dockerhub.
 
 name: Build Singularity image
 

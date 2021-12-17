@@ -109,7 +109,7 @@ RUN ./autogen.sh
 RUN export ORIGIN=\$ORIGIN
 RUN ./configure LDFLAGS='-Wl,-rpath,$$ORIGIN/../muscle/lib' && make LDADD=-lMUSCLE-3.7 && make install
 
-FROM ubuntu:xenial as base
+FROM ubuntu:xenial as app
 ARG PARSNP_VER
 ARG HARVEST_VER
 
@@ -125,8 +125,6 @@ ENV PATH="/parsnp-$PARSNP_VER:$PATH"
 
 # This is so that parsnp can find a MUSCLE library it needs
 ENV LD_LIBRARY_PATH="/usr/local/lib"
-
-FROM base as app
 
 RUN mkdir data/
 WORKDIR data
@@ -147,7 +145,6 @@ RUN mkdir ../tests/
 COPY tests/ ../tests/
 RUN python3 -m unittest discover -v -s ../tests
 
-# PARSNP_VER=1.5.6
-# Test locally with: docker build --target=test -t parsnp-$PARSNP_VER --progress=plain -f Dockerfile_from_source .
-# Build with: docker build --target=app -t parsnp-$PARSNP_VER --progress=plain -f Dockerfile_from_source .
-# Run ParSNP with: docker run --rm parsnp-$PARSNP_VER parsnp --version
+# Test locally with: docker build --target=test -t parsnp --progress=plain .
+# Build with: docker build --target=app -t parsnp --progress=plain .
+# Run ParSNP with: docker run --rm parsnp parsnp --version
