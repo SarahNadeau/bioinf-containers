@@ -28,5 +28,5 @@ jobs:
     needs: build-and-push  # test singularity run on newly pushed Docker image
     uses: SarahNadeau/bioinf-containers/.github/workflows/run-singularity.yml@master
     with:
-      dockerhub_image: "snads/clonalframeml-1.12"
+      dockerhub_image: "snads/clonalframeml:1.12"
       command: "ClonalFrameML -version"

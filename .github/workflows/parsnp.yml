@@ -10,7 +10,7 @@ jobs:
   test:
     uses: SarahNadeau/bioinf-containers/.github/workflows/test.yml@master
     with:
-      path_to_context: "./parsnp"
+      path_to_context: "./parsnp/1.5.6"
       dockerfile_name: "Dockerfile"
       cache: "parsnp"
 
@@ -18,7 +18,7 @@ jobs:
     needs: test  # this jobs needs to run serially, after testing succeeds
     uses: SarahNadeau/bioinf-containers/.github/workflows/build.yml@master
     with:
-      path_to_context: "./parsnp"
+      path_to_context: "./parsnp/1.5.6"
       dockerfile_name: "Dockerfile"
       cache: "parsnp"
       container_name: "parsnp"
@@ -31,4 +31,4 @@ jobs:
     needs: build-and-push  # test singularity run on newly pushed Docker image
     uses: SarahNadeau/bioinf-containers/.github/workflows/run-singularity.yml@master
     with:
-      dockerhub_image: "snads/parsnp-1.5.6"
+      dockerhub_image: "snads/parsnp:1.5.6"
