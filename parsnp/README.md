@@ -21,11 +21,11 @@ docker pull snads/parsnp:1.5.6
 OR, clone this repository and build the image yourself.
 ```
 git clone git@github.com:SarahNadeau/bioinf-containers.git
-cd bioinf-containers/parsnp
+cd bioinf-containers/parsnp/1.5.6
 # Run tests
-docker build --target=test -t parsnp-test -f Dockerfile_from_source .
+docker build --target=test -t parsnp-test .
 # Build production image
-docker build --target=app -t parsnp -f Dockerfile_from_source .
+docker build --target=app -t parsnp .
 ```
 
 Run a container based on the image. `--rm` deletes the container after `parsnp --version` is run.
