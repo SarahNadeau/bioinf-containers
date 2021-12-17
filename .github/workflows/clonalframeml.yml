@@ -1,0 +1,39 @@
+# This caller workflow tests, builds, and pushes the image to Docker Hub.
+
+name: Build & push ClonalFrameML image
+
+on: workflow_dispatch
+
+env:
+  REPO: "SarahNadeau/bioinf-containers"
+  PATH_TO_CONTEXT: "./clonalframeml/1.12"
+  CACHE: "clonalframeml"
+  DOCKERHUB_USER: "snads"
+  IMAGE_NAME: "clonalframeml-1.12"
+  SINGULARITY_COMMAND: "ClonalFrameML -version"
+
+jobs:
+
+  test:
+    uses: ${{ env.REPO }}/.github/workflows/test.yml@master
+    with:
+      path_to_context: ${{ env.PATH_TO_CONTEXT }}  # where the build context is
+      cache: ${{ env.CACHE }} # a unique name here specifies a unique cache of Docker layers (to avoid filling up a single cache with unrelated layers from different images)
+
+  build-and-push:
+    needs: test  # this jobs needs to run serially, after testing succeeds
+    uses: ${{ env.REPO }}/.github/workflows/build.yml@master
+    with:
+      path_to_context: ${{ env.PATH_TO_CONTEXT }}
+      cache: ${{ env.CACHE }}
+      container_name: "clonalframeml-1.12"  # name of the container for Docker Hub
+    secrets:
+      docker_hub_username: ${{ secrets.DOCKER_HUB_USERNAME }}
+      docker_hub_access_token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+
+  run-singularity:
+    needs: build-and-push  # test singularity run on newly pushed Docker image
+    uses: ${{ env.REPO }}/.github/workflows/run-singularity.yml@master
+    with:
+      dockerhub_image: ${{ env.DOCKERHUB_USER }}/${{ env.IMAGE_NAME }}
+      command: ${{ env.SINGULARITY_COMMAND }}

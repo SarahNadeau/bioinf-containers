@@ -56,7 +56,7 @@ RUN pip3 install numpy==$NUMPY_VER
 RUN ln -s /usr/local/bin/python3 /usr/local/bin/python & \
     ln -s /usr/local/bin/pip3 /usr/local/bin/pip
 
-# Install fasttree: http://www.microbesonline.org/fasttree/#Install
+# Install FastTree: http://www.microbesonline.org/fasttree/#Install
 WORKDIR /
 RUN wget http://www.microbesonline.org/fasttree/FastTree.c
 RUN gcc -O3 -finline-functions -funroll-loops -Wall -o /usr/local/bin/FastTree FastTree.c -lm
