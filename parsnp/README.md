@@ -16,21 +16,21 @@ This project implements [ParSNP](https://github.com/marbl/parsnp) from the [Harv
 ### Running a container
 Pull the image from Docker Hub.
 ```
-docker pull snads/parsnp-1.5.6:latest
+docker pull snads/parsnp:1.5.6
 ```
 OR, clone this repository and build the image yourself.
 ```
 git clone git@github.com:SarahNadeau/bioinf-containers.git
 cd bioinf-containers/parsnp
 # Run tests
-docker build --target=test -t parsnp-1.5.6-test -f Dockerfile_from_source .
+docker build --target=test -t parsnp-test -f Dockerfile_from_source .
 # Build production image
-docker build --target=app -t parsnp-1.5.6 -f Dockerfile_from_source .
+docker build --target=app -t parsnp -f Dockerfile_from_source .
 ```
 
 Run a container based on the image. `--rm` deletes the container after `parsnp --version` is run.
 ```
-docker run --rm snads/parsnp-1.5.6:latest parsnp \
+docker run --rm snads/parsnp:1.5.6 parsnp \
 --version
 ```
 
@@ -47,7 +47,7 @@ cd ../
 ```
 Run the container to generate a core genome alignment, call SNPs, and build a phylogeny. Output files are written to `output_dir`.
 ```
-docker run --rm -v $PWD:/data -u $(id -u):$(id -g) snads/parsnp-1.5.6:latest parsnp \
+docker run --rm -v $PWD:/data -u $(id -u):$(id -g) snads/parsnp:1.5.6 parsnp \
 -d input_dir \
 -o outdir_parsnp \
 --use-fasttree \
