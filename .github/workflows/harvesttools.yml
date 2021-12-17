@@ -20,7 +20,8 @@ jobs:
       path_to_context: "./harvesttools"
       dockerfile_name: "Dockerfile-from-source"
       cache: "harvesttools"
-      container_name: "harvesttools-1.3"  # name of the container for Docker Hub
+      container_name: "harvesttools"  # name of the container for Docker Hub
+      tag: 1.3
     secrets:
       docker_hub_username: ${{ secrets.DOCKER_HUB_USERNAME }}
       docker_hub_access_token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
