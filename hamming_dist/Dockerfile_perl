@@ -1,0 +1,13 @@
+FROM ubuntu:xenial
+
+RUN apt-get upgrade && apt-get update && apt-get install -y \
+    bioperl
+
+WORKDIR app/
+
+COPY pairwiseDistances.pl .
+
+ENTRYPOINT [ "perl", "pairwiseDistances.pl" ]
+
+# Build with: docker build -t get_dist_perl -f Dockerfile_perl .
+# Run with: docker run --rm --mount type=bind,source="$(pwd)",target=/app get_dist_perl -n 1 sim_alignment.fasta
