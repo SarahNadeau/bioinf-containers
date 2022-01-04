@@ -10,8 +10,8 @@ RUN apt-get update && apt-get install -y \
 
 # Use python3.6 because Biopython requires Python 3.6 or later and ubuntu 18.04 installs 3.5
 RUN add-apt-repository ppa:deadsnakes/ppa && \
-    apt update && \
-    apt install -y python3.6
+    apt-get update && \
+    apt-get install -y python3.6
 
 RUN wget https://bootstrap.pypa.io/get-pip.py
 RUN python3.6 get-pip.py
