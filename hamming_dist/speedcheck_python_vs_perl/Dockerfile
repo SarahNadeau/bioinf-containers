@@ -18,11 +18,11 @@ RUN python3.6 get-pip.py
 RUN ln -s /usr/bin/python3.6 /usr/local/bin/python3
 
 WORKDIR app/
-COPY requirements.txt requirements.txt
+COPY python_implementation/requirements.txt requirements.txt
 RUN pip3.6 install -r requirements.txt
 
-ENTRYPOINT [ "bash", "speedcheck.sh" ]
+ENTRYPOINT [ "bash", "speedcheck_python_vs_perl/speedcheck.sh" ]
 
-# Note: container expects speedcheck.sh, calc_hamming_dist.py and pairwiseDistances.pl to be in a bound working directory
-# Build with: docker build -t speedcheck -f Dockerfile_speedcheck .
+# Build with: docker build -t speedcheck -f speedcheck_python_vs_perl/Dockerfile .
+# Run note: container expects hamming_dist to be a bound working directory, uses the most working versions of perl & python implementations, speedcheck.sh from there
 # Run with: docker run --rm --mount type=bind,source="$(pwd)",target=/app speedcheck
