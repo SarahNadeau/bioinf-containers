@@ -8,3 +8,5 @@ ENTRYPOINT [ "python3", "calc_hamming_dist.py" ]
 
 # Build with: docker build -t get_dist -f Dockerfile_python .
 # Run with: docker run --rm --mount type=bind,source="$(pwd)",target=/app get_dist -n 1 toy.fasta > toy_results_python.txt
+
+

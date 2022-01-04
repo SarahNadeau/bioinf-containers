@@ -1,6 +1,6 @@
+# Use xenial because bioperl install on ubuntu 20.04 doesn't work for Perl script
 FROM ubuntu:xenial
 ARG DEBIAN_FRONTEND=noninteractive
-# Use xenial because bioperl install on ubuntu 20.04 doesn't work for Perl script
 
 RUN apt-get update && apt-get install -y \
     bioperl \
@@ -23,6 +23,6 @@ RUN pip3.6 install -r requirements.txt
 
 ENTRYPOINT [ "bash", "speedcheck.sh" ]
 
-# Note: container expects speedcheck.sh, calc_hamming_dist.py and pairwiseDistances.pl to be in the working directory
+# Note: container expects speedcheck.sh, calc_hamming_dist.py and pairwiseDistances.pl to be in a bound working directory
 # Build with: docker build -t speedcheck -f Dockerfile_speedcheck .
 # Run with: docker run --rm --mount type=bind,source="$(pwd)",target=/app speedcheck
