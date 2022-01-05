@@ -23,30 +23,3 @@ ENV O=/out
 
 # Re-direct stdout and stderr to log file
 ENTRYPOINT bash -c "bash remove_phix.sh &> $O/.log/TrimAsmAnnot.${B}"
-
-# Build with:
-#   docker build -t remove-phix --progress=plain remove_phix
-#
-# Run notes:
-#   - scripts are mapped into the container, TODO: copy scripts into container once stable
-#   - container expects environment variables R1, R2, and B to be set
-#
-# Test with:
-#    IN="$(pwd)"/pos_control/input_dir
-#    OUT="$(pwd)"/pos_control/output_dir
-#    R1=TESTX_H7YRLADXX_S1_L001_R1_001.fastq.gz
-#    R2=TESTX_H7YRLADXX_S1_L001_R2_001.fastq.gz
-#    B=TESTX_H7YRLADXX_S1_L001
-#
-#    docker run \
-#    --rm \
-#    --mount type=bind,src="$(pwd)"/shared_scripts,dst=/shared_scripts \
-#    --mount type=bind,src="$(pwd)"/remove_phix/remove_phix.sh,dst=/remove_phix.sh \
-#    --mount type=bind,src=${OUT},dst=/out \
-#    --mount type=bind,src=${IN}/${R1},dst=/in/${R1} \
-#    --mount type=bind,src=${IN}/${R2},dst=/in/${R2} \
-#    --env B=${B} \
-#    --env R1=in/${R1} \
-#    --env R2=in/${R2} \
-#    --env MIN_OUTSIZE="10 B" \
-#    remove-phix
