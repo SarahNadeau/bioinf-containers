@@ -12,7 +12,7 @@ MIN_OUTSIZE=${MIN_OUTSIZE:-"25M"}
 /bbmap/bbduk.sh threads=$NSLOTS k=31 hdist=1 \
   ref="$PHIX" in="$R1" in2="$R2"\
   out=$O/trim_reads/"${B}"-noPhiX-R1.fsq out2=$O/trim_reads/"$B"-noPhiX-R2.fsq\
-  qin=auto qout=33 overwrite=t # > $O/.log/TrimAsmAnnot.${B}
+  qin=auto qout=33 overwrite=t
 
 # Summarize PhiX removal
 for suff in R1.fsq R2.fsq ; do
