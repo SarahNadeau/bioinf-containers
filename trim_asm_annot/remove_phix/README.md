@@ -2,6 +2,8 @@
 
 This project implements [BBDuk](https://jgi.doe.gov/data-and-tools/bbtools/bb-tools-user-guide/bbduk-guide/) in a docker container to remove lingering PhiX reads from Illumina sequencing output.
 
+Here I was playing around putting logging code in the container, but I won't continue with this approach because it's not clean & deviates from StaPH-B norm. 
+
 ### Notes
 
 * It uses the PhiX version packaged with BBMap, I couldn't find PhiX_NC_001422.1.fasta.
@@ -10,7 +12,12 @@ This project implements [BBDuk](https://jgi.doe.gov/data-and-tools/bbtools/bb-to
   * bbduk.sh stdout and stderr redirected to a log file (now without JOBID suffix).
   * Nothing is printed out to stdout when the container is run :(
 
-### Build the image
+### Build the test image to run internal tests
+```
+docker build -t remove-phix-test --target=test --progress=plain remove_phix
+```
+
+### Build the app image
 ```
 docker build -t remove-phix --progress=plain remove_phix
 ```
@@ -42,11 +49,11 @@ docker run \
 --mount type=bind,src="$(pwd)"/shared_scripts,dst=/shared_scripts \
 --mount type=bind,src="$(pwd)"/remove_phix/remove_phix.sh,dst=/remove_phix.sh \
 --mount type=bind,src=${OUT},dst=/out \
---mount type=bind,src=${IN}/${R1},dst=/in/${R1} \
---mount type=bind,src=${IN}/${R2},dst=/in/${R2} \
+--mount type=bind,src=${IN}/${R1},dst=/data/${R1} \
+--mount type=bind,src=${IN}/${R2},dst=/data/${R2} \
 --env B=${B} \
---env R1=in/${R1} \
---env R2=in/${R2} \
+--env R1=${R1} \
+--env R2=${R2} \
 --env MIN_OUTSIZE="10 B" \
 remove-phix 
 ```

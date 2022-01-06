@@ -29,3 +29,18 @@ Only if the test build succeeds, the production container is built and automatic
 See, for example, this GitHub [workflow specification](https://github.com/SarahNadeau/docker-playground/blob/master/.github/workflows/test-python-docker-image.yml). Or, [this one](https://github.com/SarahNadeau/docker-playground/blob/master/.github/workflows/build_and_push.yml), which shows how to exploit common workflows that can be re-used across containers.
 
 These workflows ensure that only containers passing the baked-in tests are released.
+
+### The Recipe
+
+1. Scope the container: each should do one thing and one thing well.
+2. Install the tool and its dependencies in the Dockerfile "builder" stage.
+3. Copy over only executables and necessary libraries to "app" stage.
+
+Optional testing steps:
+4. Find some small test data.
+5. Write python tests checking for expected output from test data.
+6. Implement the tests in the "test" stage.
+
+Optional CI step, can operate on multiple related containers (e.g. those used in a pipeline) to test & push all simultaneously:
+7. Add a caller workflow to test, build, and push the image(s) to Docker Hub.
+
