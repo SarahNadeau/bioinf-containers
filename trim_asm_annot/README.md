@@ -14,8 +14,8 @@
 | pilon/1.22 |[1.23.0](https://github.com/StaPH-B/docker-builds/tree/master/pilon/1.23.0) |                                                                                                                                                   |
 | BEDTools/2.27.1 |[2.29.2](https://github.com/StaPH-B/docker-builds/tree/master/bedtools) |                                                                                                                                                   |
 | mlst/2.16 |[2.16.2](https://github.com/StaPH-B/docker-builds/tree/master/mlst) |                                                                                                                                                   |
-| barrnap/0.8 |None | [0.8](https://github.com/SarahNadeau/bioinf-containers/tree/master/barrnap/0.8)                                                                                                                                           |
+| barrnap/0.8 |None | [0.8](https://github.com/SarahNadeau/bioinf-containers/tree/master/barrnap/0.8)                                                                   |
 | perl/5.16.1-MT |Just for running prokka, I think? |                                                                                                                                                   |
 | prokka/1.14.3 |[1.14.0, 1.14.5](https://github.com/StaPH-B/docker-builds/tree/master/prokka) |                                                                                                                                                   |
-| rnammer/1.2 |None |                                                                                                                                                   |
-| ncbi-blast+/2.9.0 |None |                                                                                                                                                   |
+| rnammer/1.2 |None | Included in prokka See [here](https://stab.st-andrews.ac.uk/wiki/index.php?title=Rnammer&action=pdfbook&format=single).                           |
+| ncbi-blast+/2.9.0 |None | [2.9.0](https://github.com/SarahNadeau/bioinf-containers/tree/master/ncbi_blast%2B/2.9.0)                                                                                                                                         |
