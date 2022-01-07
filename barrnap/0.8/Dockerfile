@@ -44,6 +44,9 @@ FROM ubuntu:xenial as app
 
 COPY --from=builder /usr/ /usr/
 
+RUN mkdir /data/
+WORKDIR /data
+
 FROM app as test
 
 RUN apt-get update && apt-get install -y python3
