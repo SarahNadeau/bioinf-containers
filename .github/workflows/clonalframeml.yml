@@ -7,14 +7,14 @@ on: workflow_dispatch
 jobs:
 
   test:
-    uses: SarahNadeau/bioinf-containers/.github/workflows/test.yml@master
+    uses: SarahNadeau/bioinf-containers/.github/workflows/build-to-test.yml@master
     with:
       path_to_context: "./clonalframeml/1.12"  # where the build context is
       cache: "clonalframeml" # a unique name here specifies a unique cache of Docker layers (to avoid filling up a single cache with unrelated layers from different images)
 
   build-and-push:
     needs: test  # this jobs needs to run serially, after testing succeeds
-    uses: SarahNadeau/bioinf-containers/.github/workflows/build.yml@master
+    uses: SarahNadeau/bioinf-containers/.github/workflows/build-and-push.yml@master
     with:
       path_to_context: "./clonalframeml/1.12"
       cache: "clonalframeml"

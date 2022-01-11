@@ -8,7 +8,7 @@ on: workflow_dispatch
 jobs:
 
   test:
-    uses: SarahNadeau/bioinf-containers/.github/workflows/test.yml@master
+    uses: SarahNadeau/bioinf-containers/.github/workflows/build-to-test.yml@master
     with:
       path_to_context: "./parsnp/1.5.6"
       dockerfile_name: "Dockerfile"
@@ -16,7 +16,7 @@ jobs:
 
   build-and-push:
     needs: test  # this jobs needs to run serially, after testing succeeds
-    uses: SarahNadeau/bioinf-containers/.github/workflows/build.yml@master
+    uses: SarahNadeau/bioinf-containers/.github/workflows/build-and-push.yml@master
     with:
       path_to_context: "./parsnp/1.5.6"
       dockerfile_name: "Dockerfile"

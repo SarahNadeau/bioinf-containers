@@ -7,7 +7,7 @@ on: workflow_dispatch
 jobs:
 
   test:
-    uses: SarahNadeau/bioinf-containers/.github/workflows/test.yml@master
+    uses: SarahNadeau/bioinf-containers/.github/workflows/build-to-test.yml@master
     with:
       path_to_context: "./gubbins/3.1.4"  # where the build context is
       dockerfile_name: "Dockerfile"  # what the dockerfile is called
@@ -15,7 +15,7 @@ jobs:
 
   build-and-push:
     needs: test  # this jobs needs to run serially, after testing succeeds
-    uses: SarahNadeau/bioinf-containers/.github/workflows/build.yml@master
+    uses: SarahNadeau/bioinf-containers/.github/workflows/build-and-push.yml@master
     with:
       path_to_context: "./gubbins/3.1.4"
       dockerfile_name: "Dockerfile"
