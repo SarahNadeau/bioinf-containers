@@ -1,5 +1,7 @@
 ## Trim, Assemble, Annotate pipeline
 
+This is a messy repository to catalogue tools and write tests for a de-novo paired-end read assembly and annotation pipeline.
+
 ### Tools used and their closest container(s)
 | tool used    | closest StaPH-B image(s) | own image                                                                                                                                         |
 |--------------|--------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------|
