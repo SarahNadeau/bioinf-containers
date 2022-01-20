@@ -2,6 +2,8 @@
 
 This repository has code to build containers for bioinformatics tools.
 
+:warning: Production images are now developed in a [fork of the StaPH-B docker-builds repository](https://github.com/SarahNadeau/docker-builds). 
+
 ## Automated Testing
 The goal is to have testing baked into images. So, a container can't be pushed to an external repository until tests pass.
 

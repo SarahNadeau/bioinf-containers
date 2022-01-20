@@ -21,3 +21,11 @@ This is a messy repository to catalogue tools and write tests for a de-novo pair
 | prokka/1.14.3 |[1.14.0, 1.14.5](https://github.com/StaPH-B/docker-builds/tree/master/prokka) |                                                                                                                                                   |
 | rnammer/1.2 |None | Included in prokka See [here](https://stab.st-andrews.ac.uk/wiki/index.php?title=Rnammer&action=pdfbook&format=single).                           |
 | ncbi-blast+/2.9.0 |None | [2.9.0](https://github.com/SarahNadeau/bioinf-containers/tree/master/ncbi_blast%2B/2.9.0)                                                                                                                                         |
+
+### Testing notes
+* Using phix174_ill.ref.fa.gz PhiX genome from bbtools
+* Using TruSeq3-PE.fa adaptors from trimmomatic
+* FLASH assumes PHRED 33 quality scores, doesn't have 'auto' option like PEAR
+* FLASH has an ad-hoc way to correct for 3' end of reads being more error prone -- I disabled this check because the default value was inappropriate, should be okay given that input is already quality-trimmed?
+* Using minikraken_20171013_4GB database for kraken
+* Only a subset of reads run through kraken 1.0
