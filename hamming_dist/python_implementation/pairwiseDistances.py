@@ -9,63 +9,7 @@ from Bio import SeqIO
 from multiprocessing import Pool
 
 
-def main():
-    args = parse_args()
-
-    f = open(args.infile)
-    n_seqs = 0
-    aln_length = 0
-    for line in f:
-        if line.startswith(">"):
-            n_seqs += 1
-        elif n_seqs == 1:
-            aln_length += len(line) - 1  # -1 for newline character
-    f.close()
-
-    # Read in sequences, retaining random alignment columns if estimating
-    seqs = ["" for i in range(n_seqs)]
-    headers = ["" for i in range(n_seqs)]
-
-    if args.estimate:
-        n_positions = int(aln_length * args.estfreq)
-        sampled_positions = random.sample(range(0, aln_length), n_positions)
-
-    i = 0
-    for rec in SeqIO.parse(args.infile, "fasta"):
-        try:
-            assert len(rec.seq) == aln_length  # Input must be aligned
-        except AssertionError:
-            logmsg("Some sequences appear un-aligned!")
-            logmsg(
-                "{} is length {} instead of expected {}.".format(
-                    rec.id, len(rec.seq), aln_length
-                )
-            )
-            raise
-        if args.estimate:
-            all_bases = [base for base in rec.seq]
-            selected_bases = [all_bases[i] for i in sampled_positions]
-            seqs[i] = "".join(selected_bases)
-        else:
-            seqs[i] = str(rec.seq)  # str() increases speed
-        headers[i] = rec.id
-        i += 1
-
-    logmsg("Loaded {} sequences for comparison".format(n_seqs))
-
-    # Work through tuples of sequences, calculating distances between respective sequences
-    jobs = [(i, j) for i in range(n_seqs) for j in range(i + 1, n_seqs)]
-
-    with Pool(args.numcpus) as p:
-        for i, _ in enumerate(
-            p.imap(functools.partial(pairwise_distance, seqs, headers), jobs)
-        ):
-            if i % 100 == 0:
-                logmsg("{} queries left in the queue".format(len(jobs) - i))
-        logmsg("No more left in the queue")
-
-
-def parse_args():
+def parseArgs():
     parser = argparse.ArgumentParser(
         description="Find pairwise distances of entries in an alignment file."
     )
@@ -92,8 +36,64 @@ def parse_args():
     return parser.parse_args()
 
 
-def logmsg(*args, **kwargs):
-    print(*args, file=sys.stderr, **kwargs)
+def main():
+    opt = parseArgs()
+
+    f = open(opt.infile)
+    n_seqs = 0
+    aln_length = 0
+    for line in f:
+        if line.startswith(">"):
+            n_seqs += 1
+        elif n_seqs == 1:
+            aln_length += len(line) - 1  # -1 for newline character
+    f.close()
+
+    # Read in sequences, retaining random alignment columns if estimating
+    seqs = ["" for i in range(n_seqs)]
+    headers = ["" for i in range(n_seqs)]
+
+    if opt.estimate:
+        n_positions = int(aln_length * opt.estfreq)
+        sampled_positions = random.sample(range(0, aln_length), n_positions)
+
+    i = 0
+    for rec in SeqIO.parse(opt.infile, "fasta"):
+        try:
+            assert len(rec.seq) == aln_length  # Input must be aligned
+        except AssertionError:
+            logmsg("Some sequences appear un-aligned!")
+            logmsg(
+                "{} is length {} instead of expected {}.".format(
+                    rec.id, len(rec.seq), aln_length
+                )
+            )
+            raise
+        if opt.estimate:
+            all_bases = [base for base in rec.seq]
+            selected_bases = [all_bases[i] for i in sampled_positions]
+            seqs[i] = "".join(selected_bases)
+        else:
+            seqs[i] = str(rec.seq)  # str() increases speed
+        headers[i] = rec.id
+        i += 1
+
+    logmsg("Loaded {} sequences for comparison".format(n_seqs))
+
+    # Work through tuples of sequences, calculating distances between respective sequences
+    jobs = [(i, j) for i in range(n_seqs) for j in range(i + 1, n_seqs)]
+
+    with Pool(opt.numcpus) as p:
+        for i, _ in enumerate(
+            p.imap(functools.partial(pairwise_distance, seqs, headers), jobs)
+        ):
+            if i % 100 == 0:
+                logmsg("{} queries left in the queue".format(len(jobs) - i))
+        logmsg("No more left in the queue")
+
+
+def logmsg(*opt, **kwopt):
+    print(*opt, file=sys.stderr, **kwopt)
 
 
 def pairwise_distance(seqs, headers, idx_tuple):
