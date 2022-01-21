@@ -1,15 +1,16 @@
-FROM python:3.8-slim-buster
+FROM python:3.8-slim-buster as app
 
-RUN mkdir app/
-COPY calc_hamming_dist.py app/
-COPY requirements.txt app/
-RUN pip3 install -r app/requirements.txt
+WORKDIR /
+COPY requirements.txt .
+RUN pip3 install -r requirements.txt
 
-WORKDIR data/
+WORKDIR /usr/local/bin
+COPY calc_hamming_dist.py .
+RUN chmod u+x calc_hamming_dist.py
 
-ENTRYPOINT [ "python3", "/app/calc_hamming_dist.py" ]
+WORKDIR /data
 
-# Build with: docker build -t get_dist -f python_implementation/Dockerfile python_implementation
+# Build with: docker build --progress=plain -t get_dist -f python_implementation/Dockerfile python_implementation
 # Run note: the script expects the diectory with the alignment file to be mounted from the local machine
 # Run with: docker run --rm --mount type=bind,source="$(pwd)",target=/data get_dist <alignment> > <outfile>
 

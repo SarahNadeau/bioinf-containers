@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 # This script finds pairwise distances of entries in an alignment file. Ambiguous characters don't add distance.
 
 import argparse
@@ -11,12 +12,15 @@ from multiprocessing import Pool
 def main():
     args = parse_args()
 
-    # Get number sequences, alignment length
-    with open(args.infile) as f:
-        n_seqs = int(len(f.readlines()) / 2)
-    with open(args.infile) as f:
-        f.readline()
-        aln_length = len(f.readline()) - 1  # -1 for newline character
+    f = open(args.infile)
+    n_seqs = 0
+    aln_length = 0
+    for line in f:
+        if line.startswith(">"):
+            n_seqs += 1
+        elif n_seqs == 1:
+            aln_length += len(line) - 1  # -1 for newline character
+    f.close()
 
     # Read in sequences, retaining random alignment columns if estimating
     seqs = ["" for i in range(n_seqs)]
