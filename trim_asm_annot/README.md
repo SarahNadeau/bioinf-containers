@@ -19,8 +19,8 @@ This is a messy repository to catalogue tools and write tests for a de-novo pair
 | barrnap/0.8 |None | [0.8](https://github.com/SarahNadeau/bioinf-containers/tree/master/barrnap/0.8)                                                                   |
 | perl/5.16.1-MT |Just for running prokka, I think? |                                                                                                                                                   |
 | prokka/1.14.3 |[1.14.0, 1.14.5](https://github.com/StaPH-B/docker-builds/tree/master/prokka) |                                                                                                                                                   |
-| rnammer/1.2 |None | Included in prokka See [here](https://stab.st-andrews.ac.uk/wiki/index.php?title=Rnammer&action=pdfbook&format=single).                           |
-| ncbi-blast+/2.9.0 |None | [2.9.0](https://github.com/SarahNadeau/bioinf-containers/tree/master/ncbi_blast%2B/2.9.0)                                                                                                                                         |
+| rnammer/1.2 |None | For academic use only, replace with barrnap                                                                                                       |
+| ncbi-blast+/2.9.0 |None | [2.9.0](https://github.com/SarahNadeau/bioinf-containers/tree/master/ncbi_blast%2B/2.9.0)                                                         |
 
 ### Testing notes
 * Using phix174_ill.ref.fa.gz PhiX genome from bbtools
